@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nebula — Everyday Extraordinary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #e9ebf2;
+    --fg: #23253a;
+    --muted: #6d7088;
+    --primary: #7c5cff;
+    --nebula: #b45cff;
+    --accent: #0ba5e9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Lexend', system-ui, sans-serif; overflow-x: hidden; }
+  #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px clamp(16px, 4vw, 48px);
+  }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .2em; font-size: 15px; color: var(--fg); text-decoration: none; }
+  .logo img { width: 130px; height: auto; }
+  .cta-sm { color: var(--fg); text-decoration: none; font-size: 14px; padding: 10px 18px; border-radius: 999px; background: var(--bg); box-shadow: 4px 4px 10px rgba(163,168,196,.55), -4px -4px 10px #fff; }
+
+  .progress { position: fixed; top: 0; left: 0; height: 2px; width: 0; z-index: 11; background: linear-gradient(90deg, var(--accent), var(--primary), var(--nebula)); }
+
+  main { position: relative; z-index: 1; }
+  section {
+    min-height: 100vh; display: flex; align-items: center;
+    padding: 0 clamp(16px, 8vw, 120px);
+  }
+  section.right { justify-content: flex-end; }
+  section.center { justify-content: center; text-align: center; }
+  section.center .panel { padding: 40px; border-radius: 28px; background: radial-gradient(closest-side, rgba(233,235,242,.85), rgba(233,235,242,0)); }
+  .panel { max-width: 520px; opacity: 0; transform: translateY(40px); transition: opacity .9s ease, transform .9s ease; }
+  .panel.in { opacity: 1; transform: none; }
+  .kicker { font-size: 12px; letter-spacing: .3em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+  h1 { font-size: clamp(44px, 9vw, 112px); line-height: .95; font-weight: 700; letter-spacing: -.03em; }
+  h1 span, h2 span { background: linear-gradient(100deg, var(--primary), var(--nebula) 50%, var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  h2 { font-size: clamp(34px, 6vw, 68px); line-height: 1.02; font-weight: 600; letter-spacing: -.02em; margin-bottom: 18px; }
+  p { color: var(--muted); font-size: clamp(16px, 1.6vw, 19px); line-height: 1.6; font-weight: 300; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; margin-top: 30px;
+    padding: 16px 30px; border-radius: 999px; color: #fff; text-decoration: none; font-weight: 600;
+    background: linear-gradient(100deg, var(--primary), var(--nebula));
+    box-shadow: 0 10px 40px rgba(124,92,255,.45);
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 50px rgba(180,92,255,.6); }
+  .scroll-hint { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 5; font-size: 11px; letter-spacing: .3em; color: var(--muted); text-transform: uppercase; transition: opacity .4s; }
+  .scroll-hint::after { content: ''; display: block; width: 1px; height: 40px; margin: 10px auto 0; background: linear-gradient(var(--primary), transparent); animation: drop 1.6s ease-in-out infinite; }
+  @keyframes drop { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+  @media (max-width: 720px) {
+    section.right { justify-content: flex-start; }
+    .panel { padding: 24px; border-radius: 20px; background: rgba(233,235,242,.7); backdrop-filter: blur(6px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .panel { transition: none; opacity: 1; transform: none; }
+    .scroll-hint::after { animation: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="progress" id="progress"></div>
+
+<header>
+  <a class="logo" href="/"><img src="/images/nebula-logo.webp" alt="Nebula" /></a>
+  <a class="cta-sm" href="/shop">Shop</a>
+</header>
+
+<main>
+  <section>
+    <div class="panel">
+      <div class="kicker">More than products</div>
+      <h1>Everyday<br /><span>Extraordinary</span></h1>
+      <p style="margin-top:22px">Curated products for a brighter, simpler you. Scroll to travel through the Nebula.</p>
+    </div>
+  </section>
+  <section class="right">
+    <div class="panel">
+      <div class="kicker">01 — Electronics</div>
+      <h2>Tune into <span>your world</span></h2>
+      <p>Headphones, wearables and smart gear picked for sound, feel and everyday staying power.</p>
+    </div>
+  </section>
+  <section>
+    <div class="panel">
+      <div class="kicker">02 — Fashion & Accessories</div>
+      <h2>Wear your <span>personality</span></h2>
+      <p>Sneakers, watches and finishing touches that orbit around your style, not trends.</p>
+    </div>
+  </section>
+  <section class="right">
+    <div class="panel">
+      <div class="kicker">03 — Beauty & Home</div>
+      <h2>Make space <span>for you</span></h2>
+      <p>Calmer rooms and everyday care. Little discoveries that make ordinary days glow.</p>
+    </div>
+  </section>
+  <section class="center">
+    <div class="panel">
+      <div class="kicker">Through the arch</div>
+      <h2>A world of little <span>discoveries</span></h2>
+      <p>Free shipping over ₹999 · Secure checkout · Save now, decide later.</p>
+      <a class="btn" href="/shop">Shop Now →</a>
+    </div>
+  </section>
+</main>
+<div class="scroll-hint" id="hint">Scroll</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+const canvas = document.getElementById('scene');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 720 ? 1.5 : 2));
+renderer.setClearColor(0xe9ebf2);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0xe9ebf2, 0.012);
+const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
+
+const C = { primary: 0x7c5cff, nebula: 0xb45cff, accent: 0x0ba5e9 };
+
+// --- Lights
+scene.add(new THREE.AmbientLight(0xffffff, 1.4));
+const key = new THREE.PointLight(C.nebula, 60, 40); key.position.set(4, 4, 6); scene.add(key);
+const rim = new THREE.PointLight(C.accent, 50, 40); rim.position.set(-5, -2, -10); scene.add(rim);
+
+// --- Spiral galaxy particles
+function galaxy() {
+  const n = innerWidth < 720 ? 5000 : 9000, pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
+  const a = new THREE.Color(C.nebula), b = new THREE.Color(C.accent), w = new THREE.Color(0xffffff);
+  for (let i = 0; i < n; i++) {
+    const r = Math.random() * 30 + 1, arm = (i % 4) / 4 * Math.PI * 2, spin = r * 0.35;
+    const rnd = () => (Math.random() - .5) ** 3 * 6;
+    pos[i*3] = Math.cos(arm + spin) * r + rnd();
+    pos[i*3+1] = rnd() * 0.6;
+    pos[i*3+2] = Math.sin(arm + spin) * r + rnd();
+    const c = a.clone().lerp(b, r / 30).lerp(w, Math.random() * 0.15);
+    col.set([c.r, c.g, c.b], i * 3);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  const m = new THREE.PointsMaterial({ size: 0.14, vertexColors: true, transparent: true, depthWrite: false, });
+  const p = new THREE.Points(g, m); p.rotation.x = 0.9; p.position.set(0, 4, -90); return p;
+}
+const gal = galaxy(); scene.add(gal);
+
+// --- Background star tunnel
+const starGeo = new THREE.BufferGeometry();
+const sp = new Float32Array(3000 * 3);
+for (let i = 0; i < 3000; i++) { sp[i*3] = (Math.random()-.5)*80; sp[i*3+1] = (Math.random()-.5)*80; sp[i*3+2] = -Math.random()*120 + 20; }
+starGeo.setAttribute('position', new THREE.BufferAttribute(sp, 3));
+const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ size: 0.06, color: 0x8a86b8, transparent: true, opacity: .6 }));
+scene.add(stars);
+
+// --- Glowing arch (portal)
+const arch = new THREE.Group();
+const archMat = new THREE.MeshBasicMaterial({ color: C.nebula });
+const ring = new THREE.Mesh(new THREE.TorusGeometry(5, 0.08, 16, 120, Math.PI), archMat);
+const legL = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 6, 12), archMat); legL.position.set(-5, -3, 0);
+const legR = legL.clone(); legR.position.x = 5;
+const halo = new THREE.Mesh(new THREE.TorusGeometry(5, 0.6, 16, 120, Math.PI), new THREE.MeshBasicMaterial({ color: C.primary, transparent: true, opacity: .12, depthWrite: false }));
+arch.add(ring, legL, legR, halo);
+arch.position.set(0, 1, -42);
+scene.add(arch);
+
+// --- Floating "products" (stylised)
+const glass = (color) => new THREE.MeshPhysicalMaterial({ color, metalness: .3, roughness: .15, clearcoat: 1, emissive: color, emissiveIntensity: .15 });
+const items = [];
+function add(mesh, x, y, z) { mesh.position.set(x, y, z); mesh.userData.base = mesh.position.clone(); mesh.userData.seed = Math.random() * 10; scene.add(mesh); items.push(mesh); }
+
+// headphones
+const hp = new THREE.Group();
+hp.add(new THREE.Mesh(new THREE.TorusGeometry(1, 0.1, 16, 64, Math.PI), glass(C.primary)));
+const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.3, 32), glass(C.nebula)); cup.rotation.z = Math.PI/2; cup.position.set(-1, 0, 0);
+const cup2 = cup.clone(); cup2.position.x = 1; hp.add(cup, cup2);
+add(hp, -2.6, 0.4, -10);
+// smartwatch
+const watch = new THREE.Group();
+watch.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1.2, .25), glass(0x1b1f3a)));
+const face = new THREE.Mesh(new THREE.PlaneGeometry(.8, 1), new THREE.MeshBasicMaterial({ color: C.accent })); face.position.z = .13; watch.add(face);
+watch.add(new THREE.Mesh(new THREE.TorusGeometry(.9, .12, 8, 48), glass(C.primary)));
+add(watch, 2.8, -0.6, -20);
+// sneaker-ish capsule
+const shoe = new THREE.Mesh(new THREE.CapsuleGeometry(.5, 1.6, 8, 24), glass(C.accent)); shoe.rotation.z = Math.PI/2;
+add(shoe, 2.8, -0.4, -28);
+// perfume bottle
+const perf = new THREE.Group();
+perf.add(new THREE.Mesh(new THREE.BoxGeometry(1, 1.3, .6), new THREE.MeshPhysicalMaterial({ color: C.nebula, transmission: .7, roughness: .05, thickness: 1, emissive: C.nebula, emissiveIntensity: .2 })));
+const cap = new THREE.Mesh(new THREE.CylinderGeometry(.2, .2, .4, 24), glass(0xd9d4ff)); cap.position.y = .85; perf.add(cap);
+add(perf, -2.6, 0.2, -34);
+// decorative orbs
+for (let i = 0; i < 14; i++) {
+  const s = new THREE.Mesh(new THREE.IcosahedronGeometry(Math.random()*.25+.1, 1), glass([C.primary, C.nebula, C.accent][i%3]));
+  add(s, (Math.random()-.5)*14, (Math.random()-.5)*8, -Math.random()*45 - 4);
+}
+
+// --- Camera path through scene
+const path = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(0, 0, 8),
+  new THREE.Vector3(0.8, 0.3, -4),
+  new THREE.Vector3(-0.8, -0.2, -15),
+  new THREE.Vector3(0.8, 0.2, -24),
+  new THREE.Vector3(-0.5, 0.4, -32),
+  new THREE.Vector3(0, 0.8, -38),
+  new THREE.Vector3(0, 1.5, -52),
+]);
+
+// --- Scroll + pointer
+let target = 0, prog = 0;
+const mouse = { x: 0, y: 0 };
+const bar = document.getElementById('progress'), hint = document.getElementById('hint');
+function onScroll() {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  target = max > 0 ? scrollY / max : 0;
+  bar.style.width = (target * 100) + '%';
+  hint.style.opacity = scrollY > 40 ? 0 : 1;
+}
+addEventListener('scroll', onScroll, { passive: true });
+addEventListener('pointermove', e => { mouse.x = e.clientX / innerWidth - .5; mouse.y = e.clientY / innerHeight - .5; });
+
+// reveal panels
+const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('in', e.isIntersecting)), { threshold: .35 });
+document.querySelectorAll('.panel').forEach(p => io.observe(p));
+
+function resize() {
+  renderer.setSize(innerWidth, innerHeight, false);
+  camera.aspect = innerWidth / innerHeight;
+  camera.fov = innerWidth < 720 ? 75 : 60;
+  camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize(); onScroll();
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clock = new THREE.Clock();
+const look = new THREE.Vector3();
+function tick() {
+  const t = clock.getElapsedTime();
+  prog += (target - prog) * (reduce ? 1 : 0.06);
+
+  const p = path.getPointAt(Math.min(prog, 0.999));
+  camera.position.copy(p);
+  camera.position.x += mouse.x * 0.8; camera.position.y -= mouse.y * 0.5;
+  path.getPointAt(Math.min(prog + 0.04, 1), look);
+  camera.lookAt(look);
+
+  gal.rotation.y = t * 0.03 + prog * 1.5;
+  stars.rotation.z = prog * 0.6;
+  arch.scale.setScalar(1 + Math.sin(t * 2) * 0.01);
+  halo.material.opacity = 0.1 + Math.sin(t * 1.5) * 0.05 + prog * 0.15;
+
+  for (const m of items) {
+    const s = m.userData.seed;
+    m.rotation.x = t * 0.3 + s; m.rotation.y = t * 0.4 + s + prog * 4;
+    m.position.y = m.userData.base.y + Math.sin(t + s) * 0.25;
+  }
+  renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+tick();
+</script>
+</body>
+</html>

@@ -1,43 +1,41 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import StarField from "@/components/StarField";
+import { Truck, ShieldCheck, Heart } from "lucide-react";
 
-export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
+// Split auth screen: brand panel (desktop only) + neumorphic form card.
+// `variant="admin"` swaps the brand panel copy for the staff console.
+export default function AuthLayout({ icon: Icon, title, subtitle, footer, children, variant }) {
+  const admin = variant === "admin";
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative">
-      <StarField />
-      <div className="w-full max-w-md relative z-10">
-        {/* Logo */}
-        <Link to="/" className="flex items-center justify-center gap-2.5 mb-8">
-          <svg viewBox="0 0 40 40" className="w-10 h-10">
-            <circle cx="20" cy="20" r="3" fill="#7C5CFF" />
-            <ellipse cx="20" cy="20" rx="16" ry="6" fill="none" stroke="#7C5CFF" strokeWidth="1.5" opacity="0.6" transform="rotate(-25 20 20)" />
-            <ellipse cx="20" cy="20" rx="16" ry="6" fill="none" stroke="#4CC9F0" strokeWidth="1" opacity="0.4" transform="rotate(25 20 20)" />
-            <circle cx="34" cy="14" r="1.5" fill="#4CC9F0" />
-            <circle cx="8" cy="26" r="1" fill="#B45CFF" />
-          </svg>
-          <span className="text-2xl font-bold font-heading tracking-wider">NEBULA</span>
-        </Link>
-
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl nebula-gradient mb-4 relative">
-            <div className="absolute inset-0 rounded-2xl nebula-gradient opacity-30 blur-lg" />
-            {Icon && <Icon className="w-7 h-7 text-white relative z-10" aria-hidden="true" />}
-          </div>
-          <h1 className="text-2xl font-bold font-heading tracking-tight text-foreground">{title}</h1>
-          {subtitle && <p className="text-muted-foreground mt-2 text-sm">{subtitle}</p>}
+    <div className={`auth-shell${admin ? " is-admin" : ""}`}>
+      <aside className="auth-brand" aria-hidden="true">
+        <div className="auth-orbs"><i /><i /><i /></div>
+        <Link to="/" className="auth-brand-logo"><img src="/images/nebula-logo.webp" alt="" /></Link>
+        <div className="auth-brand-copy">
+          <span>{admin ? "Staff console" : "More than products"}</span>
+          <h2>{admin ? <>Run the store,<br /><em>beautifully.</em></> : <>Everyday<br /><em>Extraordinary</em></>}</h2>
+          {admin
+            ? <p>Products, prices, orders and customers. One calm place.</p>
+            : <ul>
+                <li><Truck size={18} /> Free shipping over ₹999</li>
+                <li><ShieldCheck size={18} /> Secure checkout</li>
+                <li><Heart size={18} /> Wishlist across devices</li>
+              </ul>}
         </div>
+      </aside>
 
-        <div className="glass-strong rounded-2xl border border-border p-8">
+      <main className="auth-main">
+        <Link to="/" className="auth-mobile-logo"><img src="/images/nebula-logo.webp" alt="Nebula" /></Link>
+        <div className="auth-card">
+          <div className="auth-head">
+            {Icon && <span className="auth-icon"><Icon size={24} aria-hidden="true" /></span>}
+            <h1>{title}</h1>
+            {subtitle && <p>{subtitle}</p>}
+          </div>
           {children}
         </div>
-
-        {footer && (
-          <p className="text-center text-sm text-muted-foreground mt-6">{footer}</p>
-        )}
-
-        <p className="text-center text-xs text-muted-foreground mt-8">Shopping Beyond the Ordinary</p>
-      </div>
+        {footer && <p className="auth-foot">{footer}</p>}
+      </main>
     </div>
   );
 }

@@ -411,3 +411,88 @@ body { background:hsl(var(--background)); }
 }
 @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
 
+
+/* ---------- Neumorphic minimal theme ---------- */
+:root {
+  --background: 228 22% 93%; --background-secondary: 228 20% 90%; --card: 228 22% 93%; --border: 228 16% 86%;
+  --neu-base:#e9ebf2; --neu-ink:#23253a; --neu-soft:#6d7088; --neu-accent:#6b5cf6;
+  --neu-light:rgb(255 255 255 / .9); --neu-dark:rgb(163 168 196 / .55);
+  --neu-raise:8px 8px 18px var(--neu-dark),-8px -8px 18px var(--neu-light);
+  --neu-raise-sm:4px 4px 10px var(--neu-dark),-4px -4px 10px var(--neu-light);
+  --neu-press:inset 5px 5px 10px var(--neu-dark),inset -5px -5px 10px var(--neu-light);
+  --store-surface:var(--neu-base); --store-ink:var(--neu-ink); --store-paper:var(--neu-base);
+}
+body { background:var(--neu-base); color:var(--neu-ink); }
+
+/* header */
+.store-header,.store-header.is-overlay { background:rgb(233 235 242 / .86); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom:0; box-shadow:0 6px 20px rgb(163 168 196 / .18); }
+.store-header.is-overlay { box-shadow:none; background:transparent; backdrop-filter:none; -webkit-backdrop-filter:none; }
+.header-actions button,.header-actions>a { border-radius:50%; transition:box-shadow .25s,color .2s; }
+.header-actions button:hover,.header-actions>a:hover { box-shadow:var(--neu-raise-sm); }
+.header-actions button:active,.header-actions>a:active { box-shadow:var(--neu-press); }
+.mobile-store-menu { background:var(--neu-base); border-top:0; box-shadow:var(--neu-raise); }
+
+/* hero: quiet canvas, image framed as a raised window */
+.nebula-hero { background:var(--neu-base); }
+.nebula-hero h1 { font-weight:300; letter-spacing:-.04em; }
+.nebula-hero-kicker::after { background:var(--neu-dark); }
+.hero-shop { background:var(--neu-base); color:var(--neu-ink); box-shadow:var(--neu-raise); }
+.hero-shop:hover { transform:none; box-shadow:var(--neu-raise-sm); color:var(--neu-accent); }
+.hero-shop:active { box-shadow:var(--neu-press); }
+.hero-story>span { background:var(--neu-base); box-shadow:var(--neu-raise-sm); color:var(--neu-accent); }
+.nebula-hero-cats a>span { background:var(--neu-base); border:0; backdrop-filter:none; -webkit-backdrop-filter:none; box-shadow:var(--neu-raise); }
+.nebula-hero-cats a:hover>span { transform:none; box-shadow:var(--neu-press); }
+@media(min-width:1024px) {
+  .nebula-hero-bg { inset:140px 6vw 56px 56%; border-radius:44px; overflow:hidden; box-shadow:var(--neu-raise),inset 0 0 0 8px var(--neu-base); }
+  .nebula-hero-bg img { object-position:78% center; }
+}
+
+/* sections */
+.benefit-strip { border-bottom:0; margin-top:28px; padding:22px 32px; border-radius:24px; box-shadow:var(--neu-press); }
+.category-tile { background:var(--neu-base); border:0; box-shadow:var(--neu-raise); }
+.category-tile:hover { transform:none; box-shadow:var(--neu-press); }
+.category-icon { background:var(--neu-base); box-shadow:var(--neu-press); }
+.find-tabs { display:inline-flex; padding:6px; border-radius:999px; box-shadow:var(--neu-press); }
+.find-tabs button { background:transparent; border:0; }
+.find-tabs button[aria-selected="true"] { background:var(--neu-base); color:var(--neu-accent); box-shadow:var(--neu-raise-sm); }
+.catalog-empty,.shipping-note { background:var(--neu-base); border:0; box-shadow:var(--neu-raise); }
+.edit-section { background:var(--neu-base); box-shadow:var(--neu-raise); }
+.edit-options button,.edit-form select { background:var(--neu-base); border:0; box-shadow:var(--neu-raise-sm); }
+.edit-options button[aria-pressed="true"] { box-shadow:var(--neu-press); color:var(--neu-accent); }
+.store-button,.btn-cosmic { background:var(--neu-base); color:var(--neu-ink); box-shadow:var(--neu-raise); }
+.store-button:hover,.btn-cosmic:hover { transform:none; box-shadow:var(--neu-raise-sm); color:var(--neu-accent); }
+.store-button:active,.btn-cosmic:active { box-shadow:var(--neu-press); }
+.recent-grid img { box-shadow:var(--neu-raise); }
+
+/* shared surfaces used across shop, cart, account, admin */
+.nebula-card { background:var(--neu-base); border:0; box-shadow:var(--neu-raise); transition:box-shadow .3s; }
+.nebula-card:hover { box-shadow:var(--neu-raise-sm); }
+.glass,.glass-strong { background:var(--neu-base); border:0; box-shadow:var(--neu-raise-sm); backdrop-filter:none; -webkit-backdrop-filter:none; }
+.nebula-gradient,.cosmic-gradient { background:var(--neu-accent); }
+input:not([type=checkbox]):not([type=radio]),textarea,select { background:var(--neu-base); border-color:transparent!important; box-shadow:var(--neu-press); }
+
+/* footer */
+.store-footer { background:var(--neu-base); border-top:0; box-shadow:inset 0 10px 20px -12px var(--neu-dark); }
+.footer-bottom { border-top:0; }
+
+/* phone-first refinements */
+@media(max-width:767px) {
+  .find-tabs { display:flex; flex-wrap:nowrap; max-width:100%; overflow-x:auto; scrollbar-width:none; }
+  .find-tabs::-webkit-scrollbar { display:none; }
+  .find-tabs button { flex:0 0 auto; padding:10px 16px; font-size:13px; min-height:40px; }
+  .benefit-strip { padding:18px; border-radius:20px; }
+  .benefit-strip span,.benefit-strip a { font-size:12px; }
+  .section-heading>a,.category-tile strong { font-size:13px; }
+  .section-heading p,.edit-section p,.footer-grid p { font-size:14px; }
+  .footer-grid>div>a:not(.store-logo) { font-size:14px; min-height:40px; margin-bottom:0; }
+  .footer-bottom { font-size:12px; flex-wrap:wrap; }
+  .category-tile { box-shadow:var(--neu-raise-sm); }
+  .hero-story { background:var(--neu-base); box-shadow:var(--neu-raise-sm); backdrop-filter:none; -webkit-backdrop-filter:none; }
+  .hero-story>span { box-shadow:none; }
+  .store-footer { padding-bottom:80px; }
+}
+
+/* 3D scroll reveal */
+.reveal-3d { opacity:0; transform:perspective(900px) translateY(48px) rotateX(16deg) scale(.97); transform-origin:50% 100%; transition:opacity .8s ease var(--d,0ms), transform .9s cubic-bezier(.2,.8,.2,1) var(--d,0ms), box-shadow .3s; }
+.reveal-3d.in { opacity:1; transform:none; }
+@media(prefers-reduced-motion:reduce) { .reveal-3d { opacity:1; transform:none; } }

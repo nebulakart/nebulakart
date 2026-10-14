@@ -36,6 +36,7 @@ import AccountNotifications from '@/pages/account/AccountNotifications';
 
 // Admin pages
 import AdminLayout from '@/pages/admin/AdminLayout';
+import AdminLogin from '@/pages/admin/AdminLogin';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminProducts from '@/pages/admin/AdminProducts';
 import AdminOrders from '@/pages/admin/AdminOrders';
@@ -74,6 +75,17 @@ const AuthenticatedApp = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        {/* Admin: own full-screen layout; AdminLayout gates on role === "admin" */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="customers" element={<AdminCustomers />} />
+          <Route path="categories" element={<AdminCategories />} />
+          <Route path="coupons" element={<AdminCoupons />} />
+        </Route>
 
         {/* Public routes with main layout */}
         <Route element={<Layout />}>
@@ -96,14 +108,6 @@ const AuthenticatedApp = () => {
               <Route path="addresses" element={<AccountAddresses />} />
               <Route path="details" element={<AccountDetails />} />
               <Route path="notifications" element={<AccountNotifications />} />
-            </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="customers" element={<AdminCustomers />} />
-              <Route path="categories" element={<AdminCategories />} />
-              <Route path="coupons" element={<AdminCoupons />} />
             </Route>
           </Route>
         </Route>

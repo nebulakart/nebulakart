@@ -1,68 +1,71 @@
 import { useEffect } from 'react';
-import { Outlet, NavLink, useNavigate, Link } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingBag, Users, Tags, Ticket, ArrowLeft, Sparkles } from 'lucide-react';
+import { Outlet, NavLink, useNavigate, Link, useLocation } from 'react-router-dom';
+import { LayoutDashboard, Package, ShoppingBag, Users, Tags, Ticket, Store, LogOut } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 
+const NAV = [
+  { to: '/admin', label: 'Dashboard', short: 'Home', icon: LayoutDashboard, end: true },
+  { to: '/admin/products', label: 'Products', short: 'Products', icon: Package },
+  { to: '/admin/orders', label: 'Orders', short: 'Orders', icon: ShoppingBag },
+  { to: '/admin/customers', label: 'Customers', short: 'People', icon: Users },
+  { to: '/admin/categories', label: 'Categories', short: 'Cats', icon: Tags },
+  { to: '/admin/coupons', label: 'Coupons', short: 'Coupons', icon: Ticket },
+];
+
 export default function AdminLayout() {
-  const { user, isAuthenticated, isLoadingAuth } = useAuth();
+  const { user, isAuthenticated, isLoadingAuth, authChecked, checkUserAuth, logout } = useAuth();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
-  useEffect(() => {
-    if (!isLoadingAuth && (!isAuthenticated || user?.role !== 'admin')) {
-      navigate('/');
-    }
-  }, [isAuthenticated, user, isLoadingAuth, navigate]);
+  useEffect(() => { if (!authChecked && !isLoadingAuth) checkUserAuth(); }, [authChecked, isLoadingAuth, checkUserAuth]);
+  const ready = authChecked && !isLoadingAuth;
+  const allowed = isAuthenticated && user?.role === 'admin';
+  useEffect(() => { if (ready && !allowed) navigate('/admin/login', { replace: true }); }, [ready, allowed, navigate]);
 
-  if (isLoadingAuth) return <div className="pt-20 text-center text-sm text-muted-foreground">Loading...</div>;
-  if (!isAuthenticated || user?.role !== 'admin') return null;
+  if (!ready) return <div className="admin-loading"><span /></div>;
+  if (!allowed) return null;
 
-  const navItems = [
-    { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
-    { to: '/admin/products', label: 'Products', icon: Package },
-    { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
-    { to: '/admin/customers', label: 'Customers', icon: Users },
-    { to: '/admin/categories', label: 'Categories', icon: Tags },
-    { to: '/admin/coupons', label: 'Coupons', icon: Ticket },
-  ];
+  const current = NAV.find(n => (n.end ? pathname === n.to : pathname.startsWith(n.to))) || NAV[0];
+  const initial = (user?.full_name || user?.email || 'A').charAt(0).toUpperCase();
 
   return (
-    <div className="min-h-screen pt-16 lg:pt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold font-heading flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-primary" /> Admin Dashboard
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">Manage your cosmic commerce platform</p>
-          </div>
-          <Link to="/" className="text-sm text-muted-foreground hover:text-primary flex items-center gap-2">
-            <ArrowLeft className="w-4 h-4" /> Back to Store
-          </Link>
+    <div className="admin-shell">
+      <aside className="admin-side">
+        <Link to="/admin" className="admin-logo"><img src="/images/nebula-logo.webp" alt="Nebula" /><small>Admin</small></Link>
+        <nav aria-label="Admin">
+          {NAV.map(({ to, label, icon: Icon, end }) => (
+            <NavLink key={to} to={to} end={end} className={({ isActive }) => `admin-nav${isActive ? ' active' : ''}`}>
+              <Icon size={18} />{label}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="admin-side-foot">
+          <Link to="/" className="admin-nav"><Store size={18} />View store</Link>
+          <button type="button" className="admin-nav" onClick={() => logout()}><LogOut size={18} />Sign out</button>
         </div>
+      </aside>
 
-        <div className="grid lg:grid-cols-5 gap-6">
-          <aside className="lg:col-span-1">
-            <div className="nebula-card p-3 sticky top-24">
-              <nav className="space-y-1">
-                {navItems.map(item => (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    end={item.end}
-                    className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${isActive ? 'nebula-gradient text-white' : 'text-muted-foreground hover:text-foreground hover:bg-foreground/5'}`}
-                  >
-                    <item.icon className="w-4 h-4" />
-                    {item.label}
-                  </NavLink>
-                ))}
-              </nav>
-            </div>
-          </aside>
-          <div className="lg:col-span-4">
-            <Outlet />
+      <div className="admin-main">
+        <header className="admin-top">
+          <div>
+            <p>Nebula console</p>
+            <h1>{current.label}</h1>
           </div>
-        </div>
+          <div className="admin-top-actions">
+            <Link to="/" className="admin-chip admin-mobile-only" aria-label="View store"><Store size={18} /></Link>
+            <span className="admin-avatar" title={user?.email}>{initial}</span>
+          </div>
+        </header>
+        <div className="admin-content"><Outlet /></div>
       </div>
+
+      <nav className="admin-tabs" aria-label="Admin">
+        {NAV.map(({ to, short, icon: Icon, end }) => (
+          <NavLink key={to} to={to} end={end} className={({ isActive }) => isActive ? 'active' : ''}>
+            <Icon size={20} /><span>{short}</span>
+          </NavLink>
+        ))}
+      </nav>
     </div>
   );
 }

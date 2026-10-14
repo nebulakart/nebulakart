@@ -2,7 +2,6 @@ const db = globalThis.__B44_DB__ || { auth:{ isAuthenticated: async()=>false, me
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
-import { appParams } from '@/lib/app-params';
 
 const AuthContext = createContext();
 
@@ -29,7 +28,7 @@ export const AuthProvider = ({ children }) => {
         setAppPublicSettings(publicSettings);
         
         // If we got the app public settings successfully, check if user is authenticated
-        if (appParams.token) {
+        if (await db.auth.isAuthenticated()) {
           await checkUserAuth();
         } else {
           setIsLoadingAuth(false);

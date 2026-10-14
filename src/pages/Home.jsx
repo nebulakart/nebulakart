@@ -1,13 +1,12 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Headphones, Shirt, Watch, Droplets, Armchair, Compass, Truck, ShieldCheck, Heart, SlidersHorizontal, Play, Sofa, SprayCan, Dumbbell, Gift } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Headphones, Shirt, Watch, Droplets, Armchair, Compass, Truck, ShieldCheck, Heart, SlidersHorizontal } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
 import { ProductGridSkeleton } from '@/components/Skeletons';
 import { useStore } from '@/lib/StoreContext';
+import NebulaHero from '@/components/NebulaHero';
 const categories = [{ name: 'Fashion', Icon: Shirt, description: 'Wear your personality' }, { name: 'Electronics', Icon: Headphones, description: 'Tune into your world' }, { name: 'Accessories', Icon: Watch, description: 'The finishing touches' }, { name: 'Beauty', Icon: Droplets, description: 'Everyday care' }, { name: 'Home', Icon: Armchair, description: 'Make space for you' }, { name: 'Lifestyle', Icon: Compass, description: 'Wherever life goes' }];
-// Hero shortcuts; labels follow the hero design, slugs map to the store's existing categories.
-const heroCategories = [{ label: 'Electronics', slug: 'electronics', Icon: Headphones }, { label: 'Fashion', slug: 'fashion', Icon: Shirt }, { label: 'Home & Living', slug: 'home', Icon: Sofa }, { label: 'Beauty', slug: 'beauty', Icon: SprayCan }, { label: 'Sports', slug: 'lifestyle', Icon: Dumbbell }, { label: 'Gifts', slug: 'accessories', Icon: Gift }];
 const edits = { 'Everyday essentials': 'Lifestyle', 'A calmer home': 'Home', 'A fresh look': 'Fashion', 'A thoughtful gift': 'Accessories' };
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -30,32 +29,15 @@ export default function Home() {
     })();
     return () => { active = false; };
   }, []);
+  useEffect(() => {
+    const els = document.querySelectorAll('.benefit-strip, .section-heading, .category-tile, .find-tabs, .product-edit-grid > *, .catalog-empty, .edit-section, .recent-grid > *');
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.15 });
+    els.forEach((el, i) => { el.classList.add('reveal-3d'); el.style.setProperty('--d', `${(i % 6) * 70}ms`); io.observe(el); });
+    return () => io.disconnect();
+  }, [loading, recentlyViewed.length]);
   const selected = products.filter(p => tab === 'All finds' || (tab === 'New arrivals' ? p.is_new : tab === 'Best sellers' ? p.is_best_seller : p.sale_price && p.sale_price < p.price)).slice(0, 4);
   return <div className="store-home">
-    <section className="nebula-hero">
-      <picture className="nebula-hero-bg">
-        <source media="(max-width: 767px)" srcSet="/images/hero-bg-mobile.webp" />
-        <img src="/images/hero-bg.webp" alt="Headphones, smartwatch, sneaker and perfume floating through a glowing arch that opens onto a galaxy" fetchPriority="high" width="1774" height="887" />
-      </picture>
-      <div className="store-container nebula-hero-inner">
-        <div className="nebula-hero-copy">
-          <span className="nebula-hero-kicker">More than products</span>
-          <h1>Everyday<br /><span>Extraordinary</span></h1>
-          <p>Curated products for a brighter, simpler you.</p>
-          <div className="nebula-hero-actions">
-            <Link className="hero-shop" to="/shop">Shop Now <ArrowRight size={22} strokeWidth={1.5} /></Link>
-            <a className="hero-story" href="#collections"><span><Play size={18} fill="currentColor" /></span>Watch the story</a>
-          </div>
-        </div>
-        <nav className="nebula-hero-cats" aria-label="Shop by category">
-          {heroCategories.map(({ label, slug, Icon }) => (
-            <Link key={label} to={`/shop?category=${slug}`}>
-              <span><Icon size={26} strokeWidth={1.4} className={Icon === Dumbbell ? 'icon-dumbbell' : undefined} /></span>{label}
-            </Link>
-          ))}
-        </nav>
-      </div>
-    </section>
+    <NebulaHero />
     <div className="benefit-strip store-container"><span><Truck size={19} /> Free shipping over ₹999</span><span><ShieldCheck size={19} /> Secure checkout</span><span><Heart size={19} /> Save now, decide later</span><Link to="/track-order">Track your order <ArrowRight size={16} /></Link></div>
     <section className="store-container category-section" id="categories"><div className="section-heading"><h2>A world of little discoveries.</h2><Link to="/shop">Shop everything <ArrowUpRight size={18} /></Link></div><div className="category-rail">{categories.map(({name, Icon, description}) => <Link key={name} to={`/shop?category=${name.toLowerCase()}`} className="category-tile"><div className="category-icon"><Icon size={32} strokeWidth={1.25} /></div><strong>{name}</strong><span>{description}</span></Link>)}</div></section>
     <section className="store-container picks-section"><div className="section-heading"><div><h2>Your next favourite is here.</h2><p>Good design. Useful details. Finds worth a closer look.</p></div><Link to="/shop">View all finds <ArrowUpRight size={18} /></Link></div><div className="find-tabs" role="tablist" aria-label="Product collections">{['All finds', 'New arrivals', 'Best sellers', 'On sale'].map(t => <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)}>{t}</button>)}</div>{loading ? <ProductGridSkeleton count={4} /> : selected.length ? <div className="product-edit-grid">{selected.map(p => <ProductCard key={p.id} product={p} onQuickView={setQuickView} />)}</div> : <div className="catalog-empty"><SlidersHorizontal size={25} /><div><h3>{error ? 'Our finds are taking a moment.' : 'Fresh finds are on their way.'}</h3><p>{error ? 'Please refresh to try loading the collection again.' : 'Explore our categories, or try another collection above.'}</p></div><Link to="/shop">Explore the shop <ArrowRight size={17} /></Link></div>}</section>
